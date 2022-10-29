@@ -54,3 +54,34 @@ int main(int argc, char* argv[]) {
     }
     return 0;
 }
+
+int flag_b(int argc, char* argv[]) {
+
+}
+
+int flag_e(int argc, char* argv[]) {
+
+}
+
+int flag_n(int argc, char* argv[]) {
+
+}
+
+int flag_s(int argc, char* argv[]) {
+
+}
+
+int flag_tt(int argc, char* argv[]) {
+
+}
+
+int flag_v(int argc, char* argv[]) {
+
+}
+
+int flag_E(int argc, char* argv[]) {
+
+}
+ int flag_T(int argc, char* argv[]) {
+
+ }

@@ -22,8 +22,35 @@ int main(int argc, char* argv[]) {
             printf("%c", c);
         }
     }
-    if(argv[1] = 45){
-        printf("rrrr");
+    if (argv[1][0] = '-') {
+        switch (argv[1][1]) {
+            case 'b':
+                printf("1");
+                break;
+            case 'e':
+                printf("2");
+                break;
+            case 'n':
+                printf("3");
+                break;
+            case 's':
+                printf("4");
+                break;
+            case 't':
+                printf("5");
+                break;
+            case 'v':
+                printf("6");
+                break;
+            case 'E':
+                printf("7");
+                break;
+            case 'T':
+                printf("8");
+                break;
+        }
+    } else {
+        printf("ERROR");
     }
     return 0;
 }

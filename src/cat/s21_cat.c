@@ -1,87 +1,90 @@
-#include <fcntl.h>
+#include <getopt.h>
 #include <stdio.h>
-#include <unistd.h>
+#include <stdlib.h>
 
-int main(int argc, char* argv[]) {
-    int fd = 0, rb = 1;
-    char c = 0;
+void parser();
+int flag();
 
-    fd = open(argv[2], O_RDONLY);
-    if (fd < 0) {
-        printf("fail");
-    } else {
-        while (rb > 0) {
-            rb = read(fd, &c, 1);
-            if (rb < 0) {
-                printf("failrrrrr");
-                break;
-            }
-            if (rb == 0) {
-                break;
-            }
-            printf("%c", c);
-        }
+typedef struct options {
+  int b;
+  int e;
+  int n;
+  int s;
+  int t;
+  int v;
+  int T;
+  int E;
+} opt;
+
+int main(int argc, char *argv[]) {
+  opt options = {0};
+  parser(argc, argv, &options);
+  flag(options);
+}
+
+void parser(int argc, char *argv[], opt *options) {
+  int opt;
+  int option_index;
+  static struct option long_options[] = {
+      {"number-nonblank", no_argument, NULL, 'b'},
+      {"number", no_argument, NULL, 'n'},
+      {"squeeze-blank", no_argument, NULL, 's'},
+      {NULL, 0, NULL, 0}};
+
+  while ((opt = getopt_long(argc, argv, "+benstvTE", long_options,
+                            &option_index)) != -1) {
+    switch (opt) {
+      case 'b':
+        options->b = 1;
+        break;
+      case 'e':
+        options->e = 1;
+        options->v = 1;
+        break;
+      case 'n':
+        options->n = 1;
+        break;
+      case 's':
+        options->s = 1;
+        break;
+      case 't':
+        options->t = 1;
+        options->v = 1;
+        break;
+      case 'v':
+        options->v = 1;
+        break;
+      case 'T':
+        options->T = 1;
+        break;
+      case 'E':
+        options->E = 1;
+        break;
+      default:
+        fprintf(stderr, "cat: illegal option -- %c\n", opt);
+        printf("usage: cat [-benstuv] [file ...]\n");
+        // exit(1);
     }
-    if (argv[1][0] = '-') {
-        switch (argv[1][1]) {
-            case 'b':
-                printf("1");
-                break;
-            case 'e':
-                printf("2");
-                break;
-            case 'n':
-                printf("3");
-                break;
-            case 's':
-                printf("4");
-                break;
-            case 't':
-                printf("5");
-                break;
-            case 'v':
-                printf("6");
-                break;
-            case 'E':
-                printf("7");
-                break;
-            case 'T':
-                printf("8");
-                break;
-        }
-    } else {
-        printf("ERROR");
-    }
-    return 0;
+  }
 }
 
-int flag_b(int argc, char* argv[]) {
-
+int flag(opt options) {
+  printf("flag_b = %d\n", options.b);
+  printf("flag_e = %d\n", options.e);
+  printf("flag_n = %d\n", options.n);
+  printf("flag_s = %d\n", options.s);
+  printf("flag_t = %d\n", options.t);
+  printf("flag_v = %d\n", options.v);
+  printf("flag_T = %d\n", options.T);
+  printf("flag_E = %d\n", options.E);
+  printf("\n");
 }
 
-int flag_e(int argc, char* argv[]) {
-
-}
-
-int flag_n(int argc, char* argv[]) {
-
-}
-
-int flag_s(int argc, char* argv[]) {
-
-}
-
-int flag_tt(int argc, char* argv[]) {
-
-}
-
-int flag_v(int argc, char* argv[]) {
-
-}
-
-int flag_E(int argc, char* argv[]) {
-
-}
- int flag_T(int argc, char* argv[]) {
-
- }
+// void reader(char *argv[], opt *options) {
+//   FILE *fp = fopen(argv[optind], "r");
+//   if () {
+//   } else {
+//     printf("No such file or directory");
+//     exit(1);
+//   }
+// }

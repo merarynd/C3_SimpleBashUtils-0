@@ -6,6 +6,8 @@
 void parser();
 void flag();
 void reader();
+void flag_b();
+void flag_n();
 
 typedef struct options {
   int b;
@@ -37,11 +39,12 @@ void parser(int argc, char *argv[], opt *options) {
       {"squeeze-blank", no_argument, NULL, 's'},
       {NULL, 0, NULL, 0}};
 
-  while ((opt = getopt_long(argc, argv, "benstvTE", long_options,
+  while ((opt = getopt_long(argc, argv, "+benstvTE", long_options,
                             &option_index)) != -1) {
     switch (opt) {
       case 'b':
         options->b = 1;
+        // flag_b(&buf);
         break;
       case 'e':
         options->e = 1;
@@ -87,17 +90,39 @@ void flag(opt options) {
 }
 
 void reader(int i, char *argv[], opt *options) {
-  int buf = 0;
+  int buf, buf1;
   FILE *fp = fopen(argv[i], "r");
   if (fp == NULL) {
     printf("No such file or directory");
     // exit(1);
 
   } else {
+    int count = 0;
     while ((buf = getc(fp)) != EOF) {
       printf("%c", buf);
+      if ((options->n)) {
+        if () printf("%6d  ", ++count);
+      }
+      if ((buf == '\t') && (options->t)) {
+        printf("^");
+      }
+      if ((buf == '\n') && (options->b) && (buf1 == '\n')) {
+        printf("%6d  ", ++count);
+      }
+      if ((buf == '\n') && (options->e)) {
+        printf("%c", buf);
+      }
+      if ((buf == '\n') && (options->s)) {
+        int i;
+        i++;
+        if (i > 3) {
+          printf("\n");
+        }
+      }
+      buf1 = buf;
+      // printf("%c", buf);
     }
-
+    // printf("%c", buf);
     fclose(fp);
     fp = NULL;
   }
@@ -129,5 +154,19 @@ void reader(int i, char *argv[], opt *options) {
 //       // close(fd);
 //     }
 //     close(fd);
+//   }
+// }
+
+// void flag_b(int buf) {
+
+//   if (buf != '\n') {
+//     printf("%d", i++);
+//   }
+// }
+
+// void flag_n(int *buf) {
+//   int i = 0;
+//   if (buf[0] != EOF) {
+//     printf("%d", i++);
 //   }
 // }

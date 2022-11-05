@@ -6,8 +6,6 @@
 void parser();
 void flag();
 void reader();
-void flag_b();
-void flag_n();
 
 typedef struct options {
   int b;
@@ -44,7 +42,6 @@ void parser(int argc, char *argv[], opt *options) {
     switch (opt) {
       case 'b':
         options->b = 1;
-        // flag_b(&buf);
         break;
       case 'e':
         options->e = 1;
@@ -90,83 +87,40 @@ void flag(opt options) {
 }
 
 void reader(int i, char *argv[], opt *options) {
-  int buf, buf1;
+  int buf;
   FILE *fp = fopen(argv[i], "r");
   if (fp == NULL) {
     printf("No such file or directory");
-    // exit(1);
-
+    exit(1);
   } else {
-    int count = 0;
-    while ((buf = getc(fp)) != EOF) {
-      printf("%c", buf);
-      if ((options->n)) {
-        if () printf("%6d  ", ++count);
+    int rev;
+    int count = 1;
+    while ((buf = fgetc(fp)) != EOF) {
+      if ((count == 1) && (options->n)) {
+        printf("%6d  ", count++);
+      } else if (((rev == '\n')) && (options->n)) {
+        printf("%6d  ", count++);
       }
       if ((buf == '\t') && (options->t)) {
         printf("^");
+        buf = 'I';
       }
-      if ((buf == '\n') && (options->b) && (buf1 == '\n')) {
-        printf("%6d  ", ++count);
+      if ((buf == '\t') && (options->T)) {
+        printf("^");
+        buf = 'I';
+      }
+      if ((buf != '\n') && (options->b) && (count == 1)) {
+        printf("%6d  ", count++);
+      } else if ((buf != '\n') && (options->b) && (rev == '\n')) {
+        printf("%6d  ", count);
       }
       if ((buf == '\n') && (options->e)) {
-        printf("%c", buf);
+        printf("$");
       }
-      if ((buf == '\n') && (options->s)) {
-        int i;
-        i++;
-        if (i > 3) {
-          printf("\n");
-        }
-      }
-      buf1 = buf;
-      // printf("%c", buf);
+      printf("%c", buf);
+      rev = buf;
     }
-    // printf("%c", buf);
     fclose(fp);
     fp = NULL;
   }
 }
-
-// void reader(int argc, char *argv[], opt *options) {
-//   int fd = 0, rb = 1;
-//   char c = 0;
-
-//   // fd = open(argv[optind], O_RDONLY);
-//   for (int i = optind; i < argc; i++) {
-//     fd = open(argv[i], O_RDONLY);
-//     printf("FFF%s", argv[i]);
-//     if (fd < 0) {
-//       printf("No such file or directory");
-//       exit(1);
-//     } else {
-//       while (rb > 0) {
-//         rb = read(fd, &c, 1);
-//         if (rb < 0) {
-//           printf("No such file or directory123");
-//           break;
-//         }
-//         if (rb == 0) {
-//           break;
-//         }
-//         printf("%c", c);
-//       }
-//       // close(fd);
-//     }
-//     close(fd);
-//   }
-// }
-
-// void flag_b(int buf) {
-
-//   if (buf != '\n') {
-//     printf("%d", i++);
-//   }
-// }
-
-// void flag_n(int *buf) {
-//   int i = 0;
-//   if (buf[0] != EOF) {
-//     printf("%d", i++);
-//   }
-// }

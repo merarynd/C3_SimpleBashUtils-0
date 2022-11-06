@@ -87,7 +87,7 @@ void flag(opt options) {
 }
 
 void reader(int i, char *argv[], opt *options) {
-  int buf;
+  int buf, ter = 0;
   FILE *fp = fopen(argv[i], "r");
   if (fp == NULL) {
     printf("No such file or directory");
@@ -112,10 +112,21 @@ void reader(int i, char *argv[], opt *options) {
       if ((buf != '\n') && (options->b) && (count == 1)) {
         printf("%6d  ", count++);
       } else if ((buf != '\n') && (options->b) && (rev == '\n')) {
-        printf("%6d  ", count);
+        printf("%6d  ", count++);
       }
       if ((buf == '\n') && (options->e)) {
         printf("$");
+      }
+      if (options->s) {
+        if (buf == '\n') {
+          ter++;
+        }
+        if (buf != '\n') {
+          ter = 0;
+        }
+      }
+      if ((options->s) && (ter > 2)) {
+        printf("sssss");
       }
       printf("%c", buf);
       rev = buf;

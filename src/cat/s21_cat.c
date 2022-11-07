@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 void parser();
-void flag();
+//void flag();
 void reader();
 
 typedef struct options {
@@ -21,8 +21,7 @@ typedef struct options {
 int main(int argc, char *argv[]) {
   opt options = {0};
   parser(argc, argv, &options);
-  flag(options);
-  printf("optin = %d\n", optind);
+ // flag(options);
   for (int i = optind; i < argc; i++) {
     reader(i, argv, &options);
   }
@@ -69,12 +68,12 @@ void parser(int argc, char *argv[], opt *options) {
       default:
         fprintf(stderr, "cat: illegal option -- %c\n", opt);
         printf("usage: cat [-benstuv] [file ...]\n");
-        // exit(1);
+        exit(1);
     }
   }
 }
 
-void flag(opt options) {
+/*void flag(opt options) {
   printf("flag_b = %d\n", options.b);
   printf("flag_e = %d\n", options.e);
   printf("flag_n = %d\n", options.n);
@@ -84,7 +83,7 @@ void flag(opt options) {
   printf("flag_T = %d\n", options.T);
   printf("flag_E = %d\n", options.E);
   printf("\n");
-}
+}*/
 
 void reader(int i, char *argv[], opt *options) {
   int buf, ter = 0;
@@ -97,24 +96,20 @@ void reader(int i, char *argv[], opt *options) {
     int count = 1;
     while ((buf = fgetc(fp)) != EOF) {
       if ((count == 1) && (options->n)) {
-        printf("%6d  ", count++);
+        printf("%6d\t", count++);
       } else if (((rev == '\n')) && (options->n)) {
-        printf("%6d  ", count++);
-      }
-      if ((buf == '\t') && (options->t)) {
-        printf("^");
-        buf = 'I';
+        printf("%6d\t", count++);
       }
       if ((buf == '\t') && (options->T)) {
         printf("^");
         buf = 'I';
       }
       if ((buf != '\n') && (options->b) && (count == 1)) {
-        printf("%6d  ", count++);
+        printf("%6d\t", count++);
       } else if ((buf != '\n') && (options->b) && (rev == '\n')) {
-        printf("%6d  ", count++);
+        printf("%6d\t", count++);
       }
-      if ((buf == '\n') && (options->e)) {
+      if ((buf == '\n') && (options->E)) {
         printf("$");
       }
       if (options->s) {
@@ -126,8 +121,48 @@ void reader(int i, char *argv[], opt *options) {
         }
       }
       if ((options->s) && (ter > 2)) {
-        printf("sssss");
+		  continue;
       }
+	  if ((buf == '\t') && (options->t)) {
+		  if ((buf != '\n') && (buf != '\t')) {
+			  if ((buf < 32) && (buf != 9) && (buf != 10)) {
+				  printf("^%c", buf + 64);
+			  }
+			  if ((buf > 127) && (buf < 160)) {
+				  printf("M-^%c", buf - 64);
+			  }
+			  if (buf == 127) {
+				  printf("^%c", buf - 64);
+			  }
+		  }
+			 printf("^");
+			buf = 'I';
+	  }
+	  if ((buf == '\n') && (options->e)) {
+		  if ((buf != '\n') && (buf != '\t')) {
+			  if ((buf < 32) && (buf != 9) && (buf != 10)) {
+				  printf("^%c", buf + 64);
+			  }
+			  if ((buf > 127) && (buf < 160)) {
+				  printf("M-^%c", buf - 64);
+			  }
+			  if (buf == 127) {
+				  printf("^%c", buf - 64);
+			  }
+		  }
+		  printf("$");
+	  }
+	  if ((options->v) && (buf != '\n') && (buf != '\t')) {
+		  if ((buf < 32) && (buf != 9) && (buf != 10)) {
+			  printf("^%c", buf + 64);
+		  }
+		  if ((buf > 127) && (buf < 160)) {
+			  printf("M-^%c", buf - 64);
+		  }
+		  if (buf == 127) {
+			  printf("^%c", buf - 64);
+		  }
+	  }
       printf("%c", buf);
       rev = buf;
     }

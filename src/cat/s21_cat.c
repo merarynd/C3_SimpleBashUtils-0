@@ -4,9 +4,8 @@
 #include <stdlib.h>
 
 void parser();
-//void flag();
+// void flag();
 void reader();
-void comp();
 
 typedef struct options {
   int b;
@@ -22,11 +21,10 @@ typedef struct options {
 int main(int argc, char *argv[]) {
   opt options = {0};
   parser(argc, argv, &options);
- // flag(options);
+  // flag(options);
   for (int i = optind; i < argc; i++) {
     reader(i, argv, &options);
   }
-  comp();
   return 0;
 }
 
@@ -76,120 +74,78 @@ void parser(int argc, char *argv[], opt *options) {
   }
 }
 
-/*void flag(opt options) {
-  printf("flag_b = %d\n", options.b);
-  printf("flag_e = %d\n", options.e);
-  printf("flag_n = %d\n", options.n);
-  printf("flag_s = %d\n", options.s);
-  printf("flag_t = %d\n", options.t);
-  printf("flag_v = %d\n", options.v);
-  printf("flag_T = %d\n", options.T);
-  printf("flag_E = %d\n", options.E);
-  printf("\n");
-}*/
+// void flag(opt options) {
+//   printf("flag_b = %d\n", options.b);
+//   printf("flag_e = %d\n", options.e);
+//   printf("flag_n = %d\n", options.n);
+//   printf("flag_s = %d\n", options.s);
+//   printf("flag_t = %d\n", options.t);
+//   printf("flag_v = %d\n", options.v);
+//   printf("flag_T = %d\n", options.T);
+//   printf("flag_E = %d\n", options.E);
+//   printf("\n");
+// }
 
 void reader(int i, char *argv[], opt *options) {
-	int buf, ter = 0, flag;
-	FILE *fp = fopen(argv[i], "r");
-	if (fp == NULL) {
-		printf("No such file or directory");
-		exit(1);
-	}
-	else {
-		int rev;
-		int count = 1;
-		while ((buf = fgetc(fp)) != EOF) {
-			flag = 1;
-			if ((flag == 1) && (options->b)) {
-				if ((buf != '\n') && (options->b) && (count == 1)) {
-				printf("%6d\t", count++);
-				}
-				else if ((buf != '\n') && (options->b) && (rev == '\n')) {
-				printf("%6d\t", count++);
-				}
-				flag++;
-			}
-			if ((flag == 1) && (options->n)) {
-				if ((count == 1) && (options->n)) {
-					printf("%6d\t", count++);
-				}
-				else if ((rev == '\n') && (options->n)) {
-					printf("%6d\t", count++);
-				}
-				flag++;
-			}
-			if ((buf == '\t') && (options->T)) {
-				printf("^");
-				buf = 'I';
-			}
-			if (options->s) {
-				if (buf == '\n') {
-					ter++;
-				}
-				if (buf != '\n') {
-					ter = 0;
-				}
-			}
-			if ((options->s) && (ter > 2)) {
-				continue;
-			}
-			if ((buf == '\t') && (options->t)) {
-				if ((buf != '\n') && (buf != '\t')) {
-					if ((buf < 32) && (buf != 9) && (buf != 10)) {
-						printf("^%c", buf + 64);
-					}
-					if ((buf > 127) && (buf < 160)) {
-						printf("M-^%c", buf - 64);
-					}
-					if (buf == 127) {
-						printf("^%c", buf - 64);
-					}
-				}
-				printf("^");
-				buf = 'I';
-			}
-			if ((buf == '\n') && ((options->e) || (options->E))) {
-				if ((buf != '\n') && (buf != '\t') && (options->e)) {
-					if ((buf < 32) && (buf != 9) && (buf != 10)) {
-						printf("^%c", buf + 64);
-					}
-					if ((buf > 127) && (buf < 160)) {
-						printf("M-^%c", buf - 64);
-					}
-					if (buf == 127) {
-						printf("^%c", buf - 64);
-					}
-				}
-				printf("$");
-			}
-			if ((options->v) && (buf != '\n') && (buf != '\t')) {
-				if ((buf < 32) && (buf != 9) && (buf != 10)) {
-					printf("^%c", buf + 64);
-				}
-				if ((buf > 127) && (buf < 160)) {
-					printf("M-^%c", buf - 64);
-				}
-				if (buf == 127) {
-					printf("^%c", buf - 64);
-				}
-			}
-			printf("%c", buf);
-			rev = buf;
-		}
-		fclose(fp);
-		fp = NULL;
-	}
-}
-void comp() {
-	char c[100], r[100];
-	int count = 0;
-	FILE* f = fopen("1.txt", "r+");
-	FILE* g = fopen("2.txt", "r+");
-	while (fgets(c, 100, f) && fgets(r, 100, g)) {
-		printf("count %d = %d |%s|", ++count, strcmp(c, r), c);
-	}
-	fclose(f);
-	f = NULL;
-	fclose(g);
-	g = NULL;
+  int buf, ter = 0, flag;
+  FILE *fp = fopen(argv[i], "r");
+  if (fp == NULL) {
+    printf("No such file or directory");
+    // exit(1);
+  } else {
+    int rev;
+    int count = 1;
+    while ((buf = fgetc(fp)) != EOF) {
+      flag = 1;
+      if (options->s) {
+        if (buf == '\n') {
+          ter++;
+        }
+        if (buf != '\n') {
+          ter = 0;
+        }
+      }
+      if ((options->s) && (ter > 2)) {
+        continue;
+      }
+      if ((flag == 1) && (options->b)) {
+        if ((buf != '\n') && (options->b) && (count == 1)) {
+          printf("%6d\t", count++);
+        } else if ((buf != '\n') && (options->b) && (rev == '\n')) {
+          printf("%6d\t", count++);
+        }
+        flag++;
+      }
+      if ((flag == 1) && (options->n)) {
+        if ((count == 1) && (options->n)) {
+          printf("%6d\t", count++);
+        } else if ((rev == '\n') && (options->n)) {
+          printf("%6d\t", count++);
+        }
+        flag++;
+      }
+      if ((buf == '\t') && ((options->T) || (options->t))) {
+        printf("^");
+        buf = 'I';
+      }
+      if ((buf == '\n') && ((options->e) || (options->E))) {
+        printf("$");
+      }
+      if ((options->v) && (buf != '\n') && (buf != '\t')) {
+        if (((buf >= 0) && (buf < 9)) || ((buf > 10) && (buf < 32)) ||
+            ((buf > 126) && (buf <= 160))) {
+          printf("^");
+          if (buf > 126) {
+            buf = buf - 64;
+          } else {
+            buf = buf + 64;
+          }
+        }
+      }
+      printf("%c", buf);
+      rev = buf;
+    }
+    fclose(fp);
+    fp = NULL;
+  }
 }

@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 void parser();
-// void flag();
 void reader();
 
 typedef struct options {
@@ -21,7 +20,6 @@ typedef struct options {
 int main(int argc, char *argv[]) {
   opt options = {0};
   parser(argc, argv, &options);
-  // flag(options);
   for (int i = optind; i < argc; i++) {
     reader(i, argv, &options);
   }
@@ -74,24 +72,11 @@ void parser(int argc, char *argv[], opt *options) {
   }
 }
 
-// void flag(opt options) {
-//   printf("flag_b = %d\n", options.b);
-//   printf("flag_e = %d\n", options.e);
-//   printf("flag_n = %d\n", options.n);
-//   printf("flag_s = %d\n", options.s);
-//   printf("flag_t = %d\n", options.t);
-//   printf("flag_v = %d\n", options.v);
-//   printf("flag_T = %d\n", options.T);
-//   printf("flag_E = %d\n", options.E);
-//   printf("\n");
-// }
-
 void reader(int i, char *argv[], opt *options) {
   int buf, ter = 0, flag;
   FILE *fp = fopen(argv[i], "r");
   if (fp == NULL) {
-    printf("No such file or directory");
-    // exit(1);
+    fprintf(stderr, "cat: %s: No such file or directory\n", argv[i]);
   } else {
     int rev;
     int count = 1;

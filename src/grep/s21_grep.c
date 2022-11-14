@@ -1,11 +1,19 @@
 #include <fcntl.h>
 #include <getopt.h>
+#include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
 
 void parser();
 void reader();
 void flag();
+int regcomp(regex_t *preg, const char *regex, int cflags);
+int regexec(const regex_t *preg, const char *string, size_t nmatch,
+            regmatch_t pmatch[], int eflags);
+size_t regerror(int errcode, const regex_t *preg, char *errbuf,
+                size_t errbuf_size);
+void regfree(regex_t *preg);
 
 typedef struct options {
   int e;
@@ -20,30 +28,37 @@ typedef struct options {
   int o;
 } opt;
 
-typedef struct Node {
-  int value;
-  struct Node *next;
-} Node;
+typedef struct {
+  regoff_t rm_so;
+  regoff_t rm_eo;
+} regmatch_t;
+
+// typedef struct Node {
+//   int value;
+//   struct Node *next;
+// } Node;
 
 int main(int argc, char *argv[]) {
   opt options = {0};
   parser(argc, argv, &options);
   flag(options);
-  // for (int i = optind; i < argc; i++) {
-  //   reader(i, argv, &options);
-  // }
+  for (int i = optind; i < argc; i++) {
+    reader(i, argv, &options);
+  }
   return 0;
 }
 
 void parser(int argc, char *argv[], opt *options) {
-  int opt;
+  int opt = 0;
+  int option_index;
   static struct option long_options[] = {
-      {"number-nonblank", no_argument, NULL, 'b'},
-      {"number", no_argument, NULL, 'n'},
-      {"squeeze-blank", no_argument, NULL, 's'},
+      // {"number-nonblank", no_argument, NULL, 'b'},
+      // {"number", no_argument, NULL, 'n'},
+      // {"squeeze-blank", no_argument, NULL, 's'},
       {NULL, 0, NULL, 0}};
 
-  while ((opt = getopt(argc, argv, "e:ivclnhsf:o")) != -1) {
+  while ((opt = getopt_long(argc, argv, "e:ivclnhsf:o", long_options,
+                            &option_index)) != -1) {
     switch (opt) {
       case 'e':
         options->e = 1;
@@ -95,4 +110,29 @@ void flag(opt options) {
   printf("flag_f = %d\n", options.f);
   printf("flag_o = %d\n", options.o);
   printf("\n");
+}
+
+void reader(int i, char *argv[], opt *options) {
+  int buf, ter = 0, flag;
+  FILE *fp = fopen(argv[i], "r");
+  if (fp == NULL) {
+    fprintf(stderr, "grep: %s: No such file or directory\n", argv[i]);
+  } else {
+    int rev;
+    while ((buf = fgetc(fp)) != EOF) {
+      printf("%c", buf);
+      rev = buf;
+    }
+    fclose(fp);
+    fp = NULL;
+  }
+}
+
+void grep() {
+  int regcomp(regex_t * preg, const char *regex, int cflags);
+  int regexec(const regex_t *preg, const char *string, size_t nmatch,
+              regmatch_t pmatch[], int eflags);
+  size_t regerror(int errcode, const regex_t *preg, char *errbuf,
+                  size_t errbuf_size);
+  void regfree(regex_t * preg);
 }

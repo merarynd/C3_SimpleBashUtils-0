@@ -3,17 +3,14 @@
 #include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
+#define BUFFER_SIZE 512
 
 void parser();
 void reader();
 void flag();
-int regcomp(regex_t *preg, const char *regex, int cflags);
-int regexec(const regex_t *preg, const char *string, size_t nmatch,
-            regmatch_t pmatch[], int eflags);
-size_t regerror(int errcode, const regex_t *preg, char *errbuf,
-                size_t errbuf_size);
-void regfree(regex_t *preg);
+void grep(char *pattern, FILE *f);
 
 typedef struct options {
   int e;
@@ -31,19 +28,17 @@ typedef struct options {
 typedef struct {
   regoff_t rm_so;
   regoff_t rm_eo;
-} regmatch_t;
-
-// typedef struct Node {
-//   int value;
-//   struct Node *next;
-// } Node;
+} match_t;
 
 int main(int argc, char *argv[]) {
   opt options = {0};
+  char *pattern;
+  FILE *fp;
   parser(argc, argv, &options);
   flag(options);
   for (int i = optind; i < argc; i++) {
-    reader(i, argv, &options);
+    reader(i, argv);
+    grep(pattern, fp);
   }
   return 0;
 }
@@ -92,7 +87,7 @@ void parser(int argc, char *argv[], opt *options) {
         break;
       default:
         fprintf(stderr, "grep: illegal option -- %c\n", opt);
-        printf("usage: grep [-benstuv] [file ...]\n");
+        printf("usage: grep [eivclnhsfo] [file ...]\n");
         exit(1);
     }
   }
@@ -112,8 +107,8 @@ void flag(opt options) {
   printf("\n");
 }
 
-void reader(int i, char *argv[], opt *options) {
-  int buf, ter = 0, flag;
+void reader(int i, char *argv[]) {
+  int buf;
   FILE *fp = fopen(argv[i], "r");
   if (fp == NULL) {
     fprintf(stderr, "grep: %s: No such file or directory\n", argv[i]);
@@ -128,11 +123,21 @@ void reader(int i, char *argv[], opt *options) {
   }
 }
 
-void grep() {
-  int regcomp(regex_t * preg, const char *regex, int cflags);
-  int regexec(const regex_t *preg, const char *string, size_t nmatch,
-              regmatch_t pmatch[], int eflags);
-  size_t regerror(int errcode, const regex_t *preg, char *errbuf,
-                  size_t errbuf_size);
-  void regfree(regex_t * preg);
+void grep(char *pattern, FILE *fp) {
+  int t;
+  regex_t re;
+  char buffer[BUFFER_SIZE];
+
+  if ((t = regcomp(&re, pattern, REG_NOSUB)) != 0) {
+    regerror(t, &re, buffer, sizeof(buffer));
+    fprintf(stderr, "grep: %s (%s)\n", buffer, pattern);
+    return;
+  }
+
+  while (fgets(buffer, BUFFER_SIZE, fp) != NULL) {
+    if (regexec(&re, buffer, 0, NULL, 0) == 0) {
+      fputs(buffer, stdout);
+    }
+  }
+  regfree(&re);
 }

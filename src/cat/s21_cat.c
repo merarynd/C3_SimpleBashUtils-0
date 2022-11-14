@@ -101,6 +101,7 @@ void reader(int i, char *argv[], opt *options) {
         }
         flag++;
       }
+
       if ((flag == 1) && (options->n)) {
         if ((count == 1) && (options->n)) {
           printf("%6d\t", count++);

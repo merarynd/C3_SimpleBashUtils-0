@@ -1,3 +1,13 @@
+The grep utility searches text files for a pattern and prints all lines that contain that pattern. It uses a compact non-deterministic algorithm.
+
+Be careful using the characters $, *, [, ^, |, (, ), and \ in the pattern_list because they are also meaningful to the shell. It is safest to enclose the entire pattern_list in single quotes a'...a'.
+
+If no files are specified, grep assumes standard input. Normally, each line found is copied to standard output. The file name is printed before each line found if there is more than one input file.  
+
+/usr/bin/grep
+The /usr/bin/grep utility uses limited regular expressions like those described on the regexp(5) manual page to match the patterns.  
+
+
 
 str          !
 

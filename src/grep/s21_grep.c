@@ -11,6 +11,10 @@ void parser();
 void reader();
 void flag();
 void grep(char *pattern, FILE *f);
+// int regexec(const regex_t *preg, const char *string, size_t nmatch,
+//             regmatch_t *pmatch, int eflags);
+
+// int regcomp(regex_t *preg, const char *pattern, int cflags);
 
 typedef struct options {
   int e;
@@ -28,7 +32,7 @@ typedef struct options {
 typedef struct {
   regoff_t rm_so;
   regoff_t rm_eo;
-} match_t;
+} regmatch_t;
 
 int main(int argc, char *argv[]) {
   opt options = {0};

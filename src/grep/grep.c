@@ -8,11 +8,10 @@
 #define D_SIMVOL 4096
 
 void parser();
-void reader();
+void grep();
 void flag();
-// void grep();
 
-typedef struct options {
+struct options {
   int e;
   int i;
   int v;
@@ -23,64 +22,65 @@ typedef struct options {
   int s;
   int f;
   int o;
-} opt;
+};
 
 int main(int argc, char *argv[]) {
+  struct options flags = {0};
   char pattern[D_SIMVOL] = {0};
-  opt options = {0};
-  parser(argc, argv, &options);
-  reader(pattern, &options);
-  flag(options);
-  // grep(argv, pattern, &options);
+  parser(argc, argv, &flags, pattern);
+  flag(&flags);
+  if (argc >= 3) {
+    grep(argc, argv, &flags, pattern);
+  }
   return 0;
 }
 
-void parser(int argc, char *argv[], opt *options) {
+void parser(int argc, char *argv[], struct options *flags, char pattern) {
   int opt = 0;
-  char str[D_SIMVOL] = {0};
-  while ((opt = getopt(argc, argv, "e:ivclnhsf:o")) != -1) {
+  const char *flag_options = "e:ivclnhsf:o";
+  while ((opt = getopt(argc, argv, flag_options)) != -1) {
     switch (opt) {
       case 'e':
-        options->e = 1;
-        sprintf(str, "%s %d %c", optarg);
+        flags->e = 1;
+        sprintf(pattern, D_SIMVOL, "%s", optarg);
         break;
       case 'i':
-        options->i = 1;
+        flags->e = 1;
         break;
       case 'v':
-        options->v = 1;
+        flags->e = 1;
         break;
       case 'c':
-        options->c = 1;
+        flags->e = 1;
         break;
       case 'l':
-        options->l = 1;
+        flags->e = 1;
         break;
       case 'n':
-        options->n = 1;
+        flags->e = 1;
         break;
       case 'h':
-        options->h = 1;
+        flags->e = 1;
         break;
       case 's':
-        options->s = 1;
+        flags->e = 1;
         break;
       case 'f':
-        options->f = 1;
-        sprintf(str, "%s %d %c", optarg);
+        flags->e = 1;
+        sprintf(pattern, D_SIMVOL, "%s", optarg);
         break;
       case 'o':
-        options->o = 1;
+        flags->e = 1;
         break;
       default:
         fprintf(stderr, "grep: illegal option -- %c\n", opt);
         printf("usage: grep [eivclnhsfo] [file ...]\n");
-        exit(1);
+        break;
     }
   }
 }
 
-void flag(opt options) {
+void flag(struct options *flags) {
   printf("flag_e = %d\n", options.e);
   printf("flag_i = %d\n", options.i);
   printf("flag_v = %d\n", options.v);
@@ -94,21 +94,6 @@ void flag(opt options) {
   printf("\n");
 }
 
-void reader(char *pattern, char *argv[]) {
-  int buf, i = 0;
-  FILE *fp = fopen(argv[i], "r");
-  if (fp == NULL) {
-    fprintf(stderr, "grep: %s: No such file or directory\n", argv[i]);
-  } else {
-    int rev;
-    while ((buf = fgetc(fp)) != EOF) {
-      if (rev == 13 || rev == 10) pattern[i++] = '|';
-      if (rev != 13 && rev != 10) pattern[i++] = rev;
-    }
-  }
-  if (pattern[i - 1] == '|') {
-    pattern[i - 1] = '\0';
-  }
-  fclose(fp);
-  fp = NULL;
-}
+void open_file() {}
+
+void grep(char *namef, struct options *flags, char pattern) {}

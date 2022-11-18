@@ -5,16 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#define BUFFER_SIZE 512
 
 void parser();
 void reader();
 void flag();
-void grep(char *pattern, FILE *f);
-// int regexec(const regex_t *preg, const char *string, size_t nmatch,
-//             regmatch_t *pmatch, int eflags);
-
-// int regcomp(regex_t *preg, const char *pattern, int cflags);
+void grep();
 
 typedef struct options {
   int e;
@@ -29,38 +24,25 @@ typedef struct options {
   int o;
 } opt;
 
-typedef struct {
-  regoff_t rm_so;
-  regoff_t rm_eo;
-} regmatch_t;
 
 int main(int argc, char *argv[]) {
-  opt options = {0};
-  char *pattern;
-  FILE *fp;
-  parser(argc, argv, &options);
-  flag(options);
-  for (int i = optind; i < argc; i++) {
-    reader(i, argv);
-    grep(pattern, fp);
-  }
-  return 0;
+	opt options = { 0 };
+	parser(argc, argv, &options);
+	for (int i = optind; i < argc; i++) {
+		reader(i, argv, &options);
+		grep(argv, &options);
+	}
+	return 0;
 }
 
 void parser(int argc, char *argv[], opt *options) {
-  int opt = 0;
-  int option_index;
-  static struct option long_options[] = {
-      // {"number-nonblank", no_argument, NULL, 'b'},
-      // {"number", no_argument, NULL, 'n'},
-      // {"squeeze-blank", no_argument, NULL, 's'},
-      {NULL, 0, NULL, 0}};
-
-  while ((opt = getopt_long(argc, argv, "e:ivclnhsf:o", long_options,
-                            &option_index)) != -1) {
+	int opt = 0;
+	char str[4096] = { 0 };
+  while ((opt = getopt(argc, argv, "e:ivclnhsf:o")) != -1) {
     switch (opt) {
       case 'e':
         options->e = 1;
+		sprintf(str, 4096, optarg);
         break;
       case 'i':
         options->i = 1;
@@ -85,6 +67,7 @@ void parser(int argc, char *argv[], opt *options) {
         break;
       case 'f':
         options->f = 1;
+		sprintf(str, 4096, optarg);
         break;
       case 'o':
         options->o = 1;
@@ -127,21 +110,20 @@ void reader(int i, char *argv[]) {
   }
 }
 
-void grep(char *pattern, FILE *fp) {
-  int t;
-  regex_t re;
-  char buffer[BUFFER_SIZE];
-
-  if ((t = regcomp(&re, pattern, REG_NOSUB)) != 0) {
-    regerror(t, &re, buffer, sizeof(buffer));
-    fprintf(stderr, "grep: %s (%s)\n", buffer, pattern);
-    return;
-  }
-
-  while (fgets(buffer, BUFFER_SIZE, fp) != NULL) {
-    if (regexec(&re, buffer, 0, NULL, 0) == 0) {
-      fputs(buffer, stdout);
-    }
-  }
-  regfree(&re);
+void grep(char *argv[], opt *options) {
+	char pattern[4096] = { 0 };
+	int flags = REG_EXTENDED;
+	regex_t reg;
+	int i;
+	FILE *fp = fopen(argv[i], "r");
+	if (fp != NULL) {
+		regcomp(&reg, pattern, flags);
+		char text[4096] = { 0 };
+		regmatch_t pmatch[1];
+		int line_matches = 0, nline = 1;
+		line_matches += match;
+		nline++;
+	}
+	regfree(&reg);
+	fclose(fp);
 }

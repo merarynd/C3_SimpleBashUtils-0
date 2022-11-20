@@ -22,7 +22,7 @@ struct options {
   int s;
   int f;
   int o;
-} ns;
+};
 
 // int main(int argc, char *argv[]) {
 //   struct options flags = {0};
@@ -36,11 +36,21 @@ struct options {
 // }
 
 int main(int argc, char *argv[]) {
-  struct options flags = {0};
   char f_pattern[D_SIMVOL] = {0};
+  struct options flags = {0};
   parser(argc, argv, &flags, f_pattern);
   // flag(&flags);
-  fgrep(&flags, argc, argv, &f_pattern);
+  char file[D_SIMVOL] = {0};
+  int rev = 0;
+  if (!flags.f && !flags.e) {
+    snprintf(file, D_SIMVOL, "%s", argv[optind++]);
+  }
+  if (argc - optind > 1) {
+    rev = 1;
+  }
+  for (int i = optind; i < argc; i++) {
+    grep(flags, file, argv[i]);
+  }
   return 0;
 }
 void parser(int argc, char *argv[], struct options *flags, char *f_pattern) {
@@ -122,21 +132,21 @@ void parser(int argc, char *argv[], struct options *flags, char *f_pattern) {
 //   fp = NULL;
 // }
 
-void fgrep(struct options *flags, int argc, char *argv[], char *buf) {
-  char file[D_SIMVOL] = {0};
-  int rev = 0;
-  if (!flags->f && !flags->e) {
-    snprintf(file, D_SIMVOL, "%s", argv[optind++]);
-  }
-  if (argc - optind > 1) {
-    rev = 1;
-  }
-  for (int i = optind; i < argc; i++) {
-    grep(flags, file, argv[i]);
-  }
-}
+// void fgrep(struct options *flags, int argc, char *argv[], char *buf) {
+//   char file[D_SIMVOL] = {0};
+//   int rev = 0;
+//   if (!flags->f && !flags->e) {
+//     snprintf(file, D_SIMVOL, "%s", argv[optind++]);
+//   }
+//   if (argc - optind > 1) {
+//     rev = 1;
+//   }
+//   for (int i = optind; i < argc; i++) {
+//     grep(flags, file, argv[i]);
+//   }
+// }
 
-void grep(struct options *flags, char *pattern, char *namef) {
+void grep(struct options flags, char *pattern, char *namef) {
   int fl = REG_EXTENDED;
   char text[D_SIMVOL] = {0};
   regex_t reg;
@@ -150,19 +160,19 @@ void grep(struct options *flags, char *pattern, char *namef) {
   }
 }
 
-void reader(struct options *flags, FILE *fp, regex_t reg, char *file) {
+void reader(struct options flags, FILE *fp, regex_t reg, char *file) {
   char text[D_SIMVOL] = {0};
   regmatch_t pmatch[1];
   while (fgets(text, D_SIMVOL - 1, fp) != NULL) {
     int match = 0;
     int success = regexec(&reg, text, 1, pmatch, 0);
-    if (success == 0 && !flags->v) {
+    if (success == 0 && !flags.v) {
       match = 1;
     }
-    if (match && !flags->l && !flags->c && !flags->o) {
+    if (match && !flags.l && !flags.c && !flags.o) {
       printf("%s", text);
     }
-    if (match && flags->o) {
+    if (match && flags.o) {
       for (int i = pmatch[0].rm_so; i < pmatch[0].rm_eo; i++) {
         printf("%c", text[i]);
       }

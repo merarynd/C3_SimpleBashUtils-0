@@ -1,32 +1,16 @@
-#include <fcntl.h>
-#include <getopt.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-void parser();
-void reader();
-
-typedef struct options {
-  int b;
-  int e;
-  int n;
-  int s;
-  int t;
-  int v;
-  int T;
-  int E;
-} opt;
+#include "s21_cat.h"
 
 int main(int argc, char *argv[]) {
   opt options = {0};
-  parser(argc, argv, &options);
-  for (int i = optind; i < argc; i++) {
-    reader(i, argv, &options);
+  if ((pars(argc, argv, &options)) == 1) {
+    for (int i = optind; i < argc; i++) {
+      read_f(i, argv, &options);
+    }
   }
   return 0;
 }
 
-void parser(int argc, char *argv[], opt *options) {
+int pars(int argc, char *argv[], opt *options) {
   int opt;
   int option_index;
   static struct option long_options[] = {
@@ -67,12 +51,12 @@ void parser(int argc, char *argv[], opt *options) {
       default:
         fprintf(stderr, "cat: illegal option -- %c\n", opt);
         printf("usage: cat [-benstuv] [file ...]\n");
-        exit(1);
     }
   }
+  return (1);
 }
 
-void reader(int i, char *argv[], opt *options) {
+void read_f(int i, char *argv[], opt *options) {
   int buf, ter = 0, flag;
   FILE *fp = fopen(argv[i], "r");
   if (fp == NULL) {

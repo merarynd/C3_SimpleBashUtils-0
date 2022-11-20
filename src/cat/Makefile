@@ -1,13 +1,11 @@
 CC = gcc
-CF = -c -Wall -Werror -Wextra
+CF =-Wall -Werror -Wextra
 
-all: s21_cat clean
+all: s21_cat
 
-s21_cat.: s21_cat.o
-	$(CC) s21_cat.o -o
-
-s21_cat.o:s21_cat.c
-	$(CC) $(CF) s21_cat.c -o s21_cat.o
+s21_cat : s21_cat.c
+	$(CC) $(CF) s21_cat.c -o s21_cat
+	make clean
 
 clean:
 	rm -rf *.o

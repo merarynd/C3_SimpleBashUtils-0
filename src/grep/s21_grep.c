@@ -1,24 +1,5 @@
+#include "s21_grep.h"
 
-#include <getopt.h>
-#include <regex.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#define D_SIMVOL 4096
-void parser();
-void grep();
-struct options {
-  int e;
-  int i;
-  int v;
-  int c;
-  int l;
-  int n;
-  int h;
-  int s;
-  int f;
-  int o;
-};
 int main(int argc, char *argv[]) {
   char f_pattern[D_SIMVOL] = {0};
   struct options flags = {0};
@@ -35,6 +16,7 @@ int main(int argc, char *argv[]) {
   }
   return 0;
 }
+
 void parser(int argc, char *argv[], struct options *flags, char *f_pattern) {
   int opt = 0;
   const char *flag_options = "e:ivclnhsf:o";

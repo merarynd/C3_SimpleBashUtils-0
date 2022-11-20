@@ -9,7 +9,6 @@
 void parser();
 void grep();
 void reader();
-void fgrep();
 
 struct options {
   int e;
@@ -23,17 +22,6 @@ struct options {
   int f;
   int o;
 };
-
-// int main(int argc, char *argv[]) {
-//   struct options flags = {0};
-//   char f_pattern[D_SIMVOL] = {0};
-//   parser(argc, argv, &flags, f_pattern);
-//   // flag(&flags);
-//   if (argc >= 3) {
-//     fgrep(&flags, argc, argv, &f_pattern);
-//   }
-//   return 0;
-// }
 
 int main(int argc, char *argv[]) {
   char f_pattern[D_SIMVOL] = {0};
@@ -130,20 +118,6 @@ void parser(int argc, char *argv[], struct options *flags, char *f_pattern) {
 //   }
 //   fclose(fp);
 //   fp = NULL;
-// }
-
-// void fgrep(struct options *flags, int argc, char *argv[], char *buf) {
-//   char file[D_SIMVOL] = {0};
-//   int rev = 0;
-//   if (!flags->f && !flags->e) {
-//     snprintf(file, D_SIMVOL, "%s", argv[optind++]);
-//   }
-//   if (argc - optind > 1) {
-//     rev = 1;
-//   }
-//   for (int i = optind; i < argc; i++) {
-//     grep(flags, file, argv[i]);
-//   }
 // }
 
 void grep(struct options flags, char *pattern, char *namef) {
